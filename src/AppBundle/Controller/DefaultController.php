@@ -35,7 +35,29 @@ class DefaultController extends Controller
 
         $languages = $tesseract->getSupportedLanguages();
 
-        $text = $tesseract->recognize($webdir.'/plat-nomor-autodigest.png');
+        $text = $tesseract->recognize($webdir.'/plat.jpg');
+
+        return new JsonResponse(array('text' => $text));
+    }
+
+
+    /**
+     * @Route("/upload", name="upload")
+     */
+    public function ocrUploadAction(Request $request)
+    {
+
+       //dump($request->request->all());
+
+
+        $webdir =  $this->getParameter('web_dir');
+
+        move_uploaded_file($_FILES['picture']['tmp_name'], $webdir. '/' . $_FILES['picture']['name']);
+
+
+        $tesseract = $this->container->get('infex_tesseract.tesseract_service');
+
+        $text = $tesseract->recognize($webdir.'/plat.jpg');
 
         return new JsonResponse(array('text' => $text));
     }
